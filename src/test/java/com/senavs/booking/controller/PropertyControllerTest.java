@@ -2,6 +2,7 @@ package com.senavs.booking.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senavs.booking.model.entity.PropertyEntity;
+import com.senavs.booking.repository.PropertyRepository;
 import com.senavs.booking.utils.TestDataUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,10 +29,31 @@ class PropertyControllerTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
+    private final PropertyRepository propertyRepository;
 
     @Test
     @SneakyThrows
-    public void testThatCreatePropertySuccessfullyReturnsHttp201CreatedAndPropertyAsJson() {
+    public void testListAllOwnerPropertiesSuccessfullyReturnsHttp200AndListOfAllProperties() {
+        final PropertyEntity propertyA = TestDataUtil.createTestPropertyEntity();
+        final PropertyEntity propertyB = TestDataUtil.createTestPropertyEntity();
+        propertyRepository.save(propertyA);
+        propertyRepository.save(propertyB);
+        final String requestBody = objectMapper.writeValueAsString(propertyA);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(String.format("/property/%s", propertyA.getOwner().getTaxId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$").isArray()
+        );
+    }
+
+    @Test
+    @SneakyThrows
+    public void testCreatePropertySuccessfullyReturnsHttp201CreatedAndPropertyAsJson() {
         final PropertyEntity testPropertyEntity = TestDataUtil.createTestPropertyEntity();
         final String requestBody = objectMapper.writeValueAsString(testPropertyEntity);
 
@@ -56,7 +78,7 @@ class PropertyControllerTest {
 
     @Test
     @SneakyThrows
-    public void testThatCreatePropertyWithInvalidRequestBodyReturningBadRequest() {
+    public void testCreatePropertyWithInvalidRequestBodyReturningBadRequest() {
         final PropertyEntity testPropertyEntity = TestDataUtil.createTestPropertyEntityWithoutOwner();
         final String requestBody = objectMapper.writeValueAsString(testPropertyEntity);
 
