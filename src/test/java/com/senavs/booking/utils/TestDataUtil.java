@@ -16,4 +16,10 @@ public class TestDataUtil {
                         .build())
                 .build();
     }
+
+    public static PropertyEntity createTestPropertyEntityWithoutOwner() {
+        final PropertyEntity testPropertyEntity = TestDataUtil.createTestPropertyEntity();
+        testPropertyEntity.setOwner(null);
+        return testPropertyEntity;
+    }
 }

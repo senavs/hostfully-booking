@@ -54,4 +54,23 @@ class PropertyControllerTest {
         );
     }
 
+    @Test
+    @SneakyThrows
+    public void testThatCreatePropertyWithInvalidRequestBodyReturningBadRequest() {
+        final PropertyEntity testPropertyEntity = TestDataUtil.createTestPropertyEntityWithoutOwner();
+        final String requestBody = objectMapper.writeValueAsString(testPropertyEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/property")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.message").value("Request validation error")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.errors").isNotEmpty()
+        );
+    }
+
 }

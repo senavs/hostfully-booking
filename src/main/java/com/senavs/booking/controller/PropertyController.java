@@ -4,6 +4,7 @@ import com.senavs.booking.mapper.PropertyMapper;
 import com.senavs.booking.model.dto.PropertyDto;
 import com.senavs.booking.model.entity.PropertyEntity;
 import com.senavs.booking.service.PropertyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +22,8 @@ public class PropertyController {
     private final PropertyMapper propertyMapper;
     private final PropertyService propertyService;
 
-    @PostMapping(path = "/")
-    public ResponseEntity<PropertyDto> registerProperty(@RequestBody final PropertyDto propertyDto) {
+    @PostMapping
+    public ResponseEntity<PropertyDto> registerProperty(@Valid @RequestBody final PropertyDto propertyDto) {
         final PropertyEntity propertyEntity = propertyMapper.map(propertyDto);
         final PropertyEntity savedPropertyEntity = propertyService.createProperty(propertyEntity);
         final PropertyDto savedPropertyDto = propertyMapper.unmap(savedPropertyEntity);
