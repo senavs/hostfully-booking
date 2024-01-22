@@ -1,6 +1,5 @@
-package com.senavs.booking.model.dto;
+package com.senavs.booking.model.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,11 +12,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties
-public class PropertyWithoutOwnerDto {
-    private Long id;
-
+public class RegisterPropertyRequest {
     @NotNull(message = "property address cannot be null")
     @NotEmpty(message = "property address cannot be empty")
     private String address;
+
+    @Valid
+    @NotNull(message = "property owner tax id cannot be null")
+    private String ownerTaxId;
 }

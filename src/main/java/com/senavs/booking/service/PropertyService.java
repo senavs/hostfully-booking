@@ -2,12 +2,15 @@ package com.senavs.booking.service;
 
 import com.senavs.booking.model.entity.PersonEntity;
 import com.senavs.booking.model.entity.PropertyEntity;
+import com.senavs.booking.model.request.RegisterPropertyRequest;
 import com.senavs.booking.repository.PersonRepository;
 import com.senavs.booking.repository.PropertyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +23,18 @@ public class PropertyService {
         return propertyRepository.findByOwnerTaxId(ownerTaxId);
     }
 
-    public final PropertyEntity createProperty(final PropertyEntity propertyEntity) {
-        final PersonEntity ownerEntity = personRepository.findByTaxId(propertyEntity.getOwner().getTaxId());
-        if (ownerEntity != null) {
-            propertyEntity.setOwner(ownerEntity);
+    public final PropertyEntity createProperty(final RegisterPropertyRequest request) {
+        final Optional<PersonEntity> ownerOptional = personRepository.findByTaxId(request.getOwnerTaxId());
+        if (ownerOptional.isEmpty()) {
+            throw new InvalidParameterException("owner does not exist");
         }
 
-        return propertyRepository.save(propertyEntity);
+        final PropertyEntity property = PropertyEntity.builder()
+                .address(request.getAddress())
+                .owner(ownerOptional.get())
+                .build();
+
+        return propertyRepository.save(property);
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,15 @@ public class ErrorHandlingController {
         return ErrorMessage.builder()
                 .message("Request validation error")
                 .errors(errors)
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(InvalidParameterException.class)
+    public ErrorMessage handleInvalidParameterException(final InvalidParameterException exception) {
+        return ErrorMessage.builder()
+                .message("Invalid request")
+                .errors(List.of(exception.getMessage()))
                 .build();
     }
 
