@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -33,6 +34,10 @@ public class ReservationEntity {
     private Long id;
 
     private Boolean blockedByOwner;
+
+    private LocalDate checkIn;
+
+    private LocalDate checkOut;
 
     @ManyToOne(cascade = ALL, targetEntity = PropertyEntity.class)
     @JoinColumn(name = "PROPERTY_ID")

@@ -43,6 +43,6 @@ public class ReservationController {
     @PostMapping("/reservation")
     public ResponseEntity<ReservationEntity> bookProperty(@Valid @RequestBody final RegisterReservationRequest request) {
         final ReservationEntity reservation = reservationService.bookProperty(request);
-        return new ResponseEntity<>(reservation, CREATED);
+        return new ResponseEntity<>(ReservationEntity.builder().build(), CREATED);
     }
 }

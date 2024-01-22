@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -21,6 +22,12 @@ public class RegisterReservationRequest {
 
     @NotNull(message = "property id cannot be null")
     private Long propertyId;
+
+    @NotNull(message = "check in cannot be null")
+    private LocalDate checkIn;
+
+    @NotNull(message = "check out cannot be null")
+    private LocalDate checkOut;
 
     @NotNull(message = "guests tax id cannot be null")
     @NotEmpty(message = "guests tax id cannot be empty")
