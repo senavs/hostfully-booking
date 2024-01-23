@@ -13,14 +13,15 @@ import java.util.List;
 public interface ReservationRepository extends CrudRepository<ReservationEntity, Long>,
         PagingAndSortingRepository<ReservationEntity, Long> {
 
-    List<ReservationEntity> findByPropertyId(final Long propertyId);
+    List<ReservationEntity> findByPropertyIdAndIsDeletedFalse(final Long propertyId);
 
     @Query("SELECT re FROM ReservationEntity re " +
             "WHERE re.property.id = ?1 AND " +
+            "re.isDeleted = FALSE AND " +
             // new reservation date inside any saved reservation date range
-            "((re.checkIn BETWEEN ?2 AND ?3) OR (re.checkOut BETWEEN ?2 AND ?3)) OR " +
+            "(((re.checkIn BETWEEN ?2 AND ?3) OR (re.checkOut BETWEEN ?2 AND ?3)) OR " +
             // any saved reservation date range inside new reservation date
-            "((?2 BETWEEN re.checkIn AND re.checkOut) OR (?3 BETWEEN re.checkIn AND re.checkOut))")
+            "((?2 BETWEEN re.checkIn AND re.checkOut) OR (?3 BETWEEN re.checkIn AND re.checkOut)))")
     List<ReservationEntity> findReservationAvailableSameDateRange(final Long propertyId,
                                                                   final LocalDate checkIn,
                                                                   final LocalDate checkOut);

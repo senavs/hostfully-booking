@@ -23,7 +23,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     public final List<ReservationEntity> listAllOwnerProperties(final Long propertyId) {
-        return reservationRepository.findByPropertyId(propertyId);
+        return reservationRepository.findByPropertyIdAndIsDeletedFalse(propertyId);
     }
 
     public ReservationEntity bookProperty(final RegisterReservationRequest request) {
@@ -40,14 +40,26 @@ public class ReservationService {
         }
 
         final ReservationEntity reservation = ReservationEntity.builder()
-                .blockedByOwner(request.getBlockedByOwner())
+                .isBlockedByOwner(request.getBlockedByOwner())
                 .property(propertyOptional.get())
                 .checkIn(request.getCheckIn())
                 .checkOut(request.getCheckOut())
                 .guests(guests)
+                .isDeleted(false)
                 .build();
 
         return reservationRepository.save(reservation);
+    }
+
+    public void deleteReservation(final Long reservationId) {
+        final Optional<ReservationEntity> reservationOptional = reservationRepository.findById(reservationId);
+        if (reservationOptional.isEmpty()) {
+            throw new InvalidParameterException("there is no reservation with the provided id");
+        }
+
+        final ReservationEntity reservation = reservationOptional.get();
+        reservation.setIsDeleted(true);
+        reservationRepository.save(reservation);
     }
 
     private void verifyReservationDateAvailability(final RegisterReservationRequest request) {
@@ -62,7 +74,7 @@ public class ReservationService {
         if (!reservationOptional.isEmpty()) {
             final ReservationEntity currentReservation = reservationOptional.get(0);
 
-            if (currentReservation.getBlockedByOwner()) {
+            if (currentReservation.getIsBlockedByOwner()) {
                 throw new InvalidParameterException("property owner blocked new reservations in this date range");
             } else {
                 throw new InvalidParameterException("this property is already booked in this period");
