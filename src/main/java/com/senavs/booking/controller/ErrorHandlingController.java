@@ -18,6 +18,9 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestControllerAdvice
 public class ErrorHandlingController {
 
+    public static final String REQUEST_VALIDATION_ERROR = "Request Validation Error";
+    public static final String INVALID_REQUEST = "Invalid Request";
+
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorMessage handleValidationError(final MethodArgumentNotValidException exception) {
@@ -27,7 +30,7 @@ public class ErrorHandlingController {
                 .map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.toList());
         return ErrorMessage.builder()
-                .message("Request Validation Error")
+                .message(REQUEST_VALIDATION_ERROR)
                 .errors(errors)
                 .build();
     }
@@ -36,7 +39,7 @@ public class ErrorHandlingController {
     @ExceptionHandler(InvalidParameterException.class)
     public ErrorMessage handleInvalidParameterException(final InvalidParameterException exception) {
         return ErrorMessage.builder()
-                .message("Invalid Request")
+                .message(INVALID_REQUEST)
                 .errors(List.of(exception.getMessage()))
                 .build();
     }

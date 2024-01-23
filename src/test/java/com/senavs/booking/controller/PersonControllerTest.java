@@ -3,7 +3,6 @@ package com.senavs.booking.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senavs.booking.model.entity.PersonEntity;
 import com.senavs.booking.model.entity.PropertyEntity;
-import com.senavs.booking.model.request.RegisterPropertyRequest;
 import com.senavs.booking.repository.PersonRepository;
 import com.senavs.booking.repository.PropertyRepository;
 import com.senavs.booking.utils.TestDataUtil;
@@ -28,54 +27,30 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-class PropertyControllerTest {
+class PersonControllerTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
     private final PersonRepository personRepository;
-    private final PropertyRepository propertyRepository;
 
     @Test
     @SneakyThrows
-    public void TEST_listAllOwnerProperties_THEN_return200AndAListOffAllProperties() {
-        final PropertyEntity propertyA = TestDataUtil.createTestPropertyEntity();
-        final PropertyEntity propertyB = TestDataUtil.createTestPropertyEntity();
-        propertyRepository.save(propertyA);
-        propertyRepository.save(propertyB);
-        final String requestBody = objectMapper.writeValueAsString(propertyA);
+    public void TEST_registerNewPerson_THEN_return401AndPersonAsJson() {
+        final PersonEntity person = TestDataUtil.createTestPersonEntity();
+        final String requestBody = objectMapper.writeValueAsString(person);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(String.format("/property/%s", propertyA.getOwner().getTaxId()))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-        ).andExpect(
-                MockMvcResultMatchers.status().isOk()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$").isNotEmpty()
-        );
-    }
-
-    @Test
-    @SneakyThrows
-    public void TEST_createProperty_THEN_return201CreatedAndPropertyAsJson() {
-        final PersonEntity owner = TestDataUtil.createTestPersonEntity();
-        personRepository.save(owner);
-
-        final RegisterPropertyRequest request = TestDataUtil.createTestRegisterPropertyRequest(owner.getTaxId());
-        final String requestBody = objectMapper.writeValueAsString(request);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/property")
+                MockMvcRequestBuilders.post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         ).andExpect(
                 MockMvcResultMatchers.status().isCreated()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").isNumber()
+                MockMvcResultMatchers.jsonPath("$.taxId").value(person.getTaxId())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.address").value(request.getAddress())
+                MockMvcResultMatchers.jsonPath("$.name").value(person.getName())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.owner.taxId").value(request.getOwnerTaxId())
+                MockMvcResultMatchers.jsonPath("$.age").value(person.getAge())
         );
     }
 
