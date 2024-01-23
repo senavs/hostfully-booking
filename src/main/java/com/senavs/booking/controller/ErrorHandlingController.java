@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ErrorHandlingController {
@@ -26,7 +27,7 @@ public class ErrorHandlingController {
                 .map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.toList());
         return ErrorMessage.builder()
-                .message("Request validation error")
+                .message("Request Validation Error")
                 .errors(errors)
                 .build();
     }
@@ -35,8 +36,18 @@ public class ErrorHandlingController {
     @ExceptionHandler(InvalidParameterException.class)
     public ErrorMessage handleInvalidParameterException(final InvalidParameterException exception) {
         return ErrorMessage.builder()
-                .message("Invalid request")
+                .message("Invalid Request")
                 .errors(List.of(exception.getMessage()))
+                .build();
+    }
+
+
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public ErrorMessage handleRuntimeException(final RuntimeException exception) {
+        return ErrorMessage.builder()
+                .message("Internal Server Error")
+                .errors(List.of())
                 .build();
     }
 
