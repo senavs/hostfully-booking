@@ -44,6 +44,15 @@ public class ReservationController {
         return new ResponseEntity<>(reservation, CREATED);
     }
 
+    @PostMapping("/reservation/{reservationId}/rebook")
+    public ResponseEntity<SimpleMessageResponse> rebookProperty(@Valid @NotNull @PathVariable final Long reservationId) {
+        final ReservationEntity reservation = reservationService.rebookProperty(reservationId);
+        final SimpleMessageResponse response = SimpleMessageResponse.builder()
+                .message("reservation was rebook successfully")
+                .build();
+        return new ResponseEntity<>(response, CREATED);
+    }
+
     @DeleteMapping("/reservation/{reservationId}")
     public ResponseEntity<SimpleMessageResponse> deleteReservation(@Valid @NotNull @PathVariable final Long reservationId) {
         reservationService.deleteReservation(reservationId);
