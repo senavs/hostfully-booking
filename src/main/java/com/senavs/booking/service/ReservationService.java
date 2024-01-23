@@ -7,7 +7,6 @@ import com.senavs.booking.model.request.RegisterReservationRequest;
 import com.senavs.booking.repository.PersonRepository;
 import com.senavs.booking.repository.PropertyRepository;
 import com.senavs.booking.repository.ReservationRepository;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -77,15 +76,12 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    private void verifyReservationDateAvailability(final Long propertyId,
-                                                   final LocalDate checkIn,
-                                                   final LocalDate checkOut) {
+    private void verifyReservationDateAvailability(final Long propertyId, final LocalDate checkIn, final LocalDate checkOut) {
         if (checkIn.isAfter(checkOut)) {
             throw new InvalidParameterException("check in cannot be greater than check out");
         }
 
-        List<ReservationEntity> reservations = reservationRepository
-                .findReservationAvailableSameDateRange(propertyId, checkIn, checkOut);
+        final List<ReservationEntity> reservations = reservationRepository.findReservationAvailableSameDateRange(propertyId, checkIn, checkOut);
 
         if (!reservations.isEmpty()) {
             final ReservationEntity currentReservation = reservations.get(0);

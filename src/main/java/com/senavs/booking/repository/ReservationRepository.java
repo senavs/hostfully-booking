@@ -22,7 +22,5 @@ public interface ReservationRepository extends CrudRepository<ReservationEntity,
             "(((re.checkIn BETWEEN ?2 AND ?3) OR (re.checkOut BETWEEN ?2 AND ?3)) OR " +
             // any saved reservation date range inside new reservation date
             "((?2 BETWEEN re.checkIn AND re.checkOut) OR (?3 BETWEEN re.checkIn AND re.checkOut)))")
-    List<ReservationEntity> findReservationAvailableSameDateRange(final Long propertyId,
-                                                                  final LocalDate checkIn,
-                                                                  final LocalDate checkOut);
+    List<ReservationEntity> findReservationAvailableSameDateRange(final Long propertyId, final LocalDate checkIn, final LocalDate checkOut);
 }

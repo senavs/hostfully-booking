@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -44,13 +46,13 @@ public class ReservationController {
         return new ResponseEntity<>(reservation, CREATED);
     }
 
-    @PostMapping("/reservation/{reservationId}/rebook")
+    @PutMapping("/reservation/{reservationId}/rebook")
     public ResponseEntity<SimpleMessageResponse> rebookProperty(@Valid @NotNull @PathVariable final Long reservationId) {
         final ReservationEntity reservation = reservationService.rebookProperty(reservationId);
         final SimpleMessageResponse response = SimpleMessageResponse.builder()
                 .message("reservation was rebook successfully")
                 .build();
-        return new ResponseEntity<>(response, CREATED);
+        return new ResponseEntity<>(response, ACCEPTED);
     }
 
     @DeleteMapping("/reservation/{reservationId}")
@@ -59,6 +61,6 @@ public class ReservationController {
         final SimpleMessageResponse response = SimpleMessageResponse.builder()
                 .message("reservation was deleted successfully")
                 .build();
-        return new ResponseEntity<>(response, CREATED);
+        return new ResponseEntity<>(response, ACCEPTED);
     }
 }
