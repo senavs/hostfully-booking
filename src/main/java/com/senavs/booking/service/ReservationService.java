@@ -70,10 +70,14 @@ public class ReservationService {
         return reservation;
     }
 
-    public void deleteReservation(final Long reservationId) {
+    public void deleteReservation(final Long reservationId, final Boolean hardDelete) {
         final ReservationEntity reservation = this.findReservation(reservationId);
-        reservation.setIsDeleted(true);
-        reservationRepository.save(reservation);
+        if (hardDelete) {
+            reservationRepository.delete(reservation);
+        } else {
+            reservation.setIsDeleted(true);
+            reservationRepository.save(reservation);
+        }
     }
 
     private void verifyReservationDateAvailability(final Long propertyId, final LocalDate checkIn, final LocalDate checkOut) {

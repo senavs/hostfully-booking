@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
@@ -94,6 +96,27 @@ class ReservationControllerTest {
 
         final ReservationEntity updatedReservation = reservationRepository.findById(reservation.getId()).get();
         assertTrue(updatedReservation.getIsDeleted());
+    }
+
+    @Test
+    @SneakyThrows
+    public void TEST_deleteProperty_WHEN_hardDeleteParamIsPassed_THEN_return202AndDeleteReservationFromDatabase() {
+        final ReservationEntity reservation = setupReservationDependencies();
+        reservationRepository.save(reservation);
+        final String requestBody = objectMapper.writeValueAsString(reservation);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/reservation/%s?hardDelete=true", reservation.getProperty().getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+        ).andExpect(
+                MockMvcResultMatchers.status().isAccepted()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.message").value("reservation was deleted successfully")
+        );
+
+        final Optional<ReservationEntity> updatedReservationOptional = reservationRepository.findById(reservation.getId());
+        assertTrue(updatedReservationOptional.isEmpty());
     }
 
     @Test
