@@ -35,7 +35,7 @@ class PersonControllerTest {
 
     @Test
     @SneakyThrows
-    public void TEST_registerNewPerson_THEN_return401AndPersonAsJson() {
+    public void TEST_registerNewPerson_THEN_return201AndPersonAsJson() {
         final PersonEntity person = TestDataUtil.createTestPersonEntity();
         final String requestBody = objectMapper.writeValueAsString(person);
 

@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "734c6016-b033-4f60-af8c-6a4ec5a51507",
+		"name": "Hostfully",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9995613"
+	},
+	"item": [
+		{
+			"name": "Person",
+			"item": [
+				{
+					"name": "Register Person",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"taxId\": \"5550123\",\n    \"name\": \"Fulano de Tal\",\n    \"age\": 25\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/person",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"person"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property",
+			"item": [
+				{
+					"name": "{{url}}/property",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"some random address\",\n    \"ownerTaxId\": \"5550123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/property",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/property/{ownerTaxId}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/5550123",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								"5550123"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservation",
+			"item": [
+				{
+					"name": "{{url}}/reservation/{propertyId}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reservation/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/reservation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"blockedByOwner\": false,\n    \"propertyId\": 1,\n    \"checkIn\": \"2023-01-10\",\n    \"checkOut\": \"2023-01-15\",\n    \"guests\": [\n        \"3330123\", \"4440123\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/reservation",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/reservation/{reservationId}/rebook",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reservation/1/rebook",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"1",
+								"rebook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/reservation/{reservationId}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reservation/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{url}}/reservation/{reservationId}?hardDelete=True",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/reservation/1?hardDelete=true",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"1"
+							],
+							"query": [
+								{
+									"key": "hardDelete",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
